@@ -1,6 +1,6 @@
 {
   "name": "garethr-docker",
-  "version": "5.6.4",
+  "version": "5.6.5",
   "author": "Gareth Rushgrove",
   "summary": "Module for installing and managing docker",
   "license": "Apache-2.0",
