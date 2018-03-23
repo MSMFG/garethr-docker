@@ -18,12 +18,16 @@ Wants=<%= @wants.uniq.join(" ") %>
 Requires=<%= @requires.uniq.join(" ") %>
 
 [Service]
+Type=<%= @systemd_type %>
 Restart=<%= @systemd_restart %>
 StartLimitInterval=20
 StartLimitBurst=5
 TimeoutStartSec=0
 RestartSec=5
 Environment="HOME=/root"
+<%- if @systemd_remain_after_exit -%>
+RemainAfterExit=true
+<%- end -%>
 <%- if @_syslog_identifier -%>
 SyslogIdentifier=<%= @_syslog_identifier %>
 <%- end -%>

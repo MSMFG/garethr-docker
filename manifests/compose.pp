@@ -48,19 +48,19 @@ class docker::compose(
       command => "curl -s -L ${proxy_opt} https://github.com/docker/compose/releases/download/${version}/docker-compose-${::kernel}-x86_64 > ${install_path}/docker-compose-${version}",
       creates => "${install_path}/docker-compose-${version}",
       require => Package['curl'],
-    } ->
-    file { "${install_path}/docker-compose-${version}":
+    }
+    -> file { "${install_path}/docker-compose-${version}":
       owner => 'root',
-      mode  => '0755'
-    } ->
-    file { "${install_path}/docker-compose":
+      mode  => '0755',
+    }
+    -> file { "${install_path}/docker-compose":
       ensure => 'link',
       target => "${install_path}/docker-compose-${version}",
     }
   } else {
     file { [
       "${install_path}/docker-compose-${version}",
-      "${install_path}/docker-compose"
+      "${install_path}/docker-compose",
     ]:
       ensure => absent,
     }
