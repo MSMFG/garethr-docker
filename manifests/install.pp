@@ -24,7 +24,7 @@ class docker::install {
           # On Ubuntu 12.04 (precise) install the backported 13.10 (saucy) kernel
           '12.04': { $kernelpackage = [
                                         'linux-image-generic-lts-trusty',
-                                        'linux-headers-generic-lts-trusty'
+                                        'linux-headers-generic-lts-trusty',
                                       ]
           }
           # determine the package name for 'linux-image-extra-$(uname -r)' based
@@ -52,7 +52,7 @@ class docker::install {
       $manage_kernel = false
       if $docker::version {
         notify { 'docker::version unsupported on Archlinux':
-          message => 'Versions other than latest are not supported on Arch Linux. This setting will be ignored.'
+          message => 'Versions other than latest are not supported on Arch Linux. This setting will be ignored.',
         }
       }
     }

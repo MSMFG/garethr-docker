@@ -91,6 +91,8 @@ define docker::run(
   $detach = undef,
   $extra_parameters = undef,
   $systemd_restart = 'on-failure',
+  $systemd_type = 'simple',
+  $systemd_remain_after_exit = false,
   $extra_systemd_parameters = {},
   $pull_on_start = false,
   $after = [],
@@ -123,6 +125,7 @@ define docker::run(
   validate_re($title, '^[\S]*$')
   validate_re($memory_limit, '^[\d]*(b|k|m|g)$')
   validate_re($ensure, '^(present|absent)')
+  validate_re($systemd_type, '^(simple|forking|oneshot|dbus|notify|idle)')
   if $restart {
     validate_re($restart, '^(no|always|unless-stopped|on-failure)|^on-failure:[\d]+$')
   }
@@ -148,6 +151,7 @@ define docker::run(
   validate_bool($remove_volume_on_start)
   validate_bool($remove_volume_on_stop)
   validate_bool($use_name)
+  validate_bool($systemd_remain_after_exit)
 
   validate_integer($stop_wait_time)
 
@@ -238,7 +242,7 @@ define docker::run(
       unless      => "${docker_command} ps --no-trunc -a | grep `cat ${cidfile}`",
       environment => 'HOME=/root',
       path        => ['/bin', '/usr/bin'],
-      timeout     => 0
+      timeout     => 0,
     }
   } else {
 
@@ -320,7 +324,7 @@ define docker::run(
             onlyif      => "${docker_command} ps --no-trunc -a --format='table {{.Names}}' | grep '^${sanitised_title}$'",
             path        => ['/bin', '/usr/bin'],
             environment => 'HOME=/root',
-            timeout     => 0
+            timeout     => 0,
         }
 
     }
@@ -330,8 +334,8 @@ define docker::run(
         ensure  => present,
         content => template($runscript_template),
         mode    => '0550',
-      } ->
-      file { $initscript:
+      }
+      -> file { $initscript:
         ensure  => present,
         content => template($init_template),
         mode    => $mode,
@@ -361,11 +365,11 @@ define docker::run(
             exec { "/bin/sh /etc/init.d/${service_prefix}${sanitised_title} stop":
               onlyif  => join($transition_onlyif, ' '),
               require => [],
-            } ->
-            file { "/var/run/${service_prefix}${sanitised_title}.cid":
+            }
+            -> file { "/var/run/${service_prefix}${sanitised_title}.cid":
               ensure => absent,
-            } ->
-            File[$initscript]
+            }
+            -> File[$initscript]
           }
 
           if $uses_systemd {
