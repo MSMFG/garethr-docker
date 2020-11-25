@@ -154,7 +154,7 @@ class docker::params {
       $service_hasstatus  = true
       $service_hasrestart = true
 
-      if ($::operatingsystem == 'Fedora') or (versioncmp($::operatingsystemrelease, '7.0') >= 0) and $::operatingsystem != 'Amazon' {
+      if ($::operatingsystem == 'Fedora') or versioncmp($::operatingsystemrelease, '7.0') >= 0 or $::operatingsystem == 'Amazon' {
         $service_provider           = 'systemd'
         $service_config_template    = 'docker/etc/sysconfig/docker.systemd.erb'
         $service_overrides_template = 'docker/etc/systemd/system/docker.service.d/service-overrides-rhel.conf.erb'
@@ -331,3 +331,4 @@ class docker::params {
   }
 
 }
+

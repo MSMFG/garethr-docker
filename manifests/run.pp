@@ -266,7 +266,7 @@ define docker::run(
         }
       }
       'RedHat': {
-        if ($::operatingsystem == 'Amazon') or (versioncmp($::operatingsystemrelease, '7.0') < 0) {
+        if $::operatingsystem != 'Amazon' and (versioncmp($::operatingsystemrelease, '7.0') < 0) {
           $initscript     = "/etc/init.d/${service_prefix}${sanitised_title}"
           $init_template  = 'docker/etc/init.d/docker-run.erb'
           $hasstatus      = undef

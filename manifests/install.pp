@@ -38,13 +38,8 @@ class docker::install {
       }
     }
     'RedHat': {
-      if $::operatingsystem == 'Amazon' {
-        if versioncmp($::operatingsystemrelease, '3.10.37-47.135') < 0 {
-          fail('Docker needs Amazon version to be at least 3.10.37-47.135.')
-        }
-      }
-      elsif versioncmp($::operatingsystemrelease, '6.5') < 0 {
-        fail('Docker needs RedHat/CentOS version to be at least 6.5.')
+      if $::operatingsystem != 'Amazon' and versioncmp($::operatingsystemrelease, '6.5') < 0 {
+        fail('Docker needs RedHat/CentOS version to be at least 6.5 or Amazon Linux 2')
       }
       $manage_kernel = false
     }
@@ -71,7 +66,10 @@ class docker::install {
     }
   }
 
-  if $docker::manage_package {
+  # Always use default AWS distribution for docker if Amazon Linux 2
+  if $::operatingsystem == 'Amazon' {
+    ensure_resource('package', 'docker')
+  } elsif $docker::manage_package {
 
     if empty($docker::repo_opt) {
       $docker_hash = {}
