@@ -197,7 +197,7 @@ class docker::params {
       $apt_source_pin_level = undef
       $service_name = $service_name_default
       $docker_command = $docker_command_default
-      if (versioncmp($::operatingsystemrelease, '7.0') < 0) or ($::operatingsystem == 'Amazon') {
+      if (versioncmp($::operatingsystemrelease, '7.0') < 0) and $::operatingsystem != 'Amazon' {
         $detach_service_in_init = true
         if $::operatingsystem == 'OracleLinux' {
           $docker_group = 'dockerroot'
