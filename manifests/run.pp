@@ -91,6 +91,7 @@ define docker::run(
   $detach = undef,
   $extra_parameters = undef,
   $systemd_restart = 'on-failure',
+  $start_limit_interval_sec = 20,
   $systemd_type = 'simple',
   $systemd_remain_after_exit = false,
   $extra_systemd_parameters = {},

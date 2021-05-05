@@ -20,7 +20,7 @@ Requires=<%= @requires.uniq.join(" ") %>
 [Service]
 Type=<%= @systemd_type %>
 Restart=<%= @systemd_restart %>
-StartLimitInterval=20
+StartLimitIntervalSec=<%= @start_limit_interval_sec %>
 StartLimitBurst=5
 TimeoutStartSec=0
 RestartSec=5
